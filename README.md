@@ -1,57 +1,63 @@
-📊 ANÁLISE DE HOMICIDIOS DE PESSOAS NEGRAS NO BRASIL
-Análise exploratória e inferencial sobre a relação entre PIB per capita e a taxa de homicídios de pessoas negras no Brasil (2022).
+<div style="font-family: Arial, sans-serif; line-height: 1.6;">
 
-Projeto desenvolvido em Python (Jupyter/Notebook/Scripts) com geração de gráficos PNG e tabelas CSV.
+<h1 style="text-align:center; font-size: 32px; margin-bottom: 10px;">
+📊 <strong>Análise de Homicídios de Pessoas Negras no Brasil — 2022</strong>
+</h1>
 
-🧭 Objetivo do projeto
+<p style="text-align:center; font-size: 18px; color: #444;">
+Estudo exploratório e inferencial relacionando <strong>PIB per capita</strong> e a <strong>taxa de homicídios da população negra</strong> nos estados brasileiros.
+</p>
 
-Investigar se existe uma relação entre o nível econômico de cada estado (medido pelo PIB per capita em 2022) e a letalidade violenta sobre a população negra (homicídios por 100.000 habitantes negros). Especificamente:
+<hr style="margin: 30px 0;">
 
-Calcular a taxa de homicídios de pessoas negras por UF (óbitos por 100.000 habitantes negros).
+<h2>🧭 Objetivo Geral</h2>
 
-Obter e preparar dados de população total, população negra e PIB 2022.
+<p>
+O projeto investiga se existe relação entre o nível econômico dos estados (PIB per capita — IBGE, 2022) e a letalidade violenta contra pessoas negras (taxa por 100 mil habitantes negros).
+</p>
 
-Visualizar padrões absolutos (nº homicídios, população) e relativos (taxas).
+<ul>
+  <li>Calcular a <strong>taxa de homicídios da população negra por UF</strong>;</li>
+  <li>Construir base integrada com dados do <strong>Censo 2022</strong> (população total e negra);</li>
+  <li>Processar dados de <strong>PIB por UF</strong>;</li>
+  <li>Criar visualizações estatísticas e comparativas;</li>
+  <li>Testar a hipótese: <em>PIB per capita tem relação negativa com a taxa de homicídios da população negra</em>.</li>
+</ul>
 
-Testar a hipótese: PIB per capita tem relação negativa com a taxa de homicídios da população negra (usar Pearson r e avaliar significância).
+<hr style="margin: 30px 0;">
 
-📚 Fontes de dados (origem)
+<h2>📚 Fontes de Dados</h2>
 
-As fontes utilizadas e como cada conjunto foi empregado:
+<h3>🔸 Atlas da Violência — IPEA / FBSP</h3>
+<p>Número de homicídios por raça/cor por UF.</p>
+<p><strong>Arquivo:</strong> <code>homicidios-negros.csv</code></p>
 
-Atlas da Violência / IPEA / FBSP (dados de homicídios por raça/cor)
+<h3>🔸 Censo 2022 — IBGE</h3>
+<p>População total e população autodeclarada preta/parda (consolidada como <code>pop_negra</code>).</p>
+<p><strong>Arquivo gerado:</strong> <code>censo_2022_pop_negra.csv</code></p>
 
-Contém nº de homicídios por raça/cor por Unidade Federativa.
+<h3>🔸 PIB por Estado — IBGE</h3>
+<p>PIB dos estados em milhares de reais.</p>
+<p><strong>Arquivo:</strong> <code>pib_estados_2022.csv</code></p>
 
-Arquivo no repositório: homicidios-negros.csv (separador ;).
+<hr style="margin: 30px 0;">
 
-Usado para extrair os homicídios de pessoas negras em 2022 (período == 2022).
+<h2>⚙️ Ambiente e Dependências</h2>
 
-Censo 2022 (IBGE)
-
-População total por UF e população que se autodeclarou preta/ parda/negra (aqui consolidada como pop_negra).
-
-No repositório: geramos censo_2022_pop_negra.csv (exemplo de construção manual contido no notebook/script).
-
-Usado como denominador para calcular taxa por 100.000.
-
-PIB dos estados (IBGE / tabela consolidada)
-
-PIB por UF (aqui fornecido em milhares de reais no arquivo pib_estados_2022.csv gerado no script).
-
-Usado para calcular pib_per_capita (PIB em reais / população total).
-
-Dependências / Ambiente
-
-Recomendado criar um ambiente virtual (venv / conda). Instale com:
-
+<div style="background:#111; padding:15px; border-radius:8px; color:#eee; margin: 10px 0;">
+<pre>
 python -m venv .venv
-source .venv/bin/activate   # Linux / macOS
-.venv\Scripts\activate      # Windows
+source .venv/bin/activate     # Linux / macOS
+.venv\Scripts\activate        # Windows
 
 pip install -r requirements.txt
+</pre>
+</div>
 
-Exemplo requirements.txt (contém bibliotecas usadas no notebook/script):
+<p><strong>requirements.txt:</strong></p>
+
+<div style="background:#111; padding:15px; border-radius:8px; color:#eee;">
+<pre>
 pandas
 numpy
 matplotlib
@@ -60,96 +66,105 @@ scipy
 statsmodels
 unidecode
 IPython
+</pre>
+</div>
 
-Limpeza e preparação dos dados (detalhes técnicos)
+<hr style="margin: 30px 0;">
 
-As principais etapas de pré-processamento aplicadas:
+<h2>🧹 Limpeza e Preparação dos Dados</h2>
 
-Leitura e padronização
+<ul>
+  <li>Leitura e padronização de nomes de estados;</li>
+  <li>Filtragem do ano 2022;</li>
+  <li>Remoção de entradas nacionais (ex.: "Brasil");</li>
+  <li>Conversão de tipos numéricos;</li>
+  <li>Merge entre bases (Censo × Homicídios × PIB);</li>
+  <li>Cálculo de PIB per capita;</li>
+  <li>Cálculo da taxa de homicídios da população negra;</li>
+  <li>Verificação de valores nulos/zeros.</li>
+</ul>
 
-df_homicidios_negros = pd.read_csv("homicidios-negros.csv", sep=";")
+<div style="background:#111; padding:15px; border-radius:8px; color:#eee;">
+<pre>
+df_h = pd.read_csv("homicidios-negros.csv", sep=";")
+df_2022 = df_h[df_h["período"] == 2022]
 
-Normalizar nomes de UF (unidecode / upper) se necessário.
+df_merged = df_2022.merge(df_censo, on="nome")
+df_merged["taxa_homicidios_negros"] = (
+    df_merged["valor"] / df_merged["pop_negra"]
+) * 100000
 
-Filtrar o ano de interesse
+df_merged["pib_per_capita"] = df_merged["pib_reais"] / df_merged["pop_total"]
+</pre>
+</div>
 
-df_2022 = df_homicidios_negros[df_homicidios_negros["período"] == 2022].
+<hr style="margin: 30px 0;">
 
-Remover agregados nacionais
+<h2>📈 Visualizações e Estatísticas</h2>
 
-Garantir que o dataset contenha apenas UFs (remover linha "Brasil" / "BR" se existir) para evitar distorções.
+<ul>
+  <li>Barras com população total e negra (Top 10);</li>
+  <li>Barras com número absoluto de homicídios por UF;</li>
+  <li>Barras com PIB per capita (Top 10);</li>
+  <li>Barras com maiores taxas de homicídio da população negra;</li>
+  <li>Scatterplot PIB per capita × taxa de homicídios, com linha de regressão;</li>
+  <li>Cálculo de Pearson e regressão linear (opcional).</li>
+</ul>
 
-Tipos numéricos e conversões
+<div style="background:#111; padding:15px; border-radius:8px; color:#eee;">
+<pre>
+from scipy.stats import pearsonr
 
-Converter colunas numéricas (valor, pop_total, pop_negra, pib_mil_reais) para int/float.
+r, p = pearsonr(
+    df_merged["pib_per_capita"],
+    df_merged["taxa_homicidios_negros"]
+)
 
-Converter PIB: pib_reais = pib_mil_reais * 1000.
-
-Merge das tabelas
-
-df = df_pib.merge(df_censo, on="nome", how="inner") — ou df_homicidios com df_censo para taxas.
-
-Cálculo do PIB per capita
-
-df["pib_per_capita"] = df["pib_reais"] / df["pop_total"].
-
-Cálculo da taxa (homicídios por 100k habitantes negros)
-
-taxa = (n_homicidios_negros / pop_negra) * 100000.
-
-Tratamento de zeros / NaNs
-
-Verificar pop_negra == 0 (evitar divisão por zero), preencher ou excluir conforme justificativa.
-
-Código — o que cada parte faz (resumo técnico)
-
-No notebook/script principal foram implementadas as seguintes rotinas:
-
-Construção / leitura de DataFrames: df_censo, df_pib, df_homicidios_negros.
-
-Visualizações com Matplotlib / Seaborn:
-
-Barras: população total (Top10), população negra (Top10), número absoluto de homicídios por UF.
-
-Barras: PIB per capita (Top10).
-
-Barras: Top10 taxa de homicídios de negros (por 100k).
-
-Scatter com linha de regressão (seaborn.regplot) para pib_per_capita x taxa_homicidios_negros, com rótulos dos pontos (nomes das UFs).
-
-Estatística:
-
-Cálculo do coeficiente de correlação de Pearson: pearsonr(x, y) (resulta em r e p-value).
-
-Regressão linear simples via statsmodels (opcional) para estimar inclinação, intercepto e p-values dos coeficientes.
-
-Export:
-
-Salvar CSVs processados e PNGs de cada figura (dpi=300, bbox_inches="tight").
-
-Trecho essencial (exemplo):
-# merge e cálculo de taxa
-df_merged = df_homicidios_ultimo.merge(df_censo, on="nome")
-df_merged["taxa_homicidios_negros"] = (df_merged["valor"] / df_merged["pop_negra"]) * 100000
-
-# correlação
-r, p = pearsonr(df_merged["pib_per_capita"], df_merged["taxa_homicidios_negros"])
 print(f"Pearson r = {r:.2f}, p = {p:.4f}")
+</pre>
+</div>
 
-Principais resultados (interpretação)
+<hr style="margin: 30px 0;">
 
-Panorama absoluto: Estados com maior população total (SP, MG, RJ) concentram maior número absoluto de homicídios — porém esse resultado é esperado por efeito de escala populacional.
+<h2>📌 Principais Resultados</h2>
 
-Taxa por 100k (população negra): Estados do Norte e Nordeste aparecem com as maiores taxas (ex.: Amapá, Alagoas, Pernambuco, Amazonas), indicando risco desproporcional mesmo quando ajustado pela população negra.
+<h3>1. Panorama Absoluto</h3>
+<p>
+Estados mais populosos — SP, MG, RJ — apresentam maior número absoluto de homicídios, como esperado pelo tamanho populacional.
+</p>
 
-Correlação:
+<h3>2. Taxa por 100 mil (População Negra)</h3>
+<p>
+Norte e Nordeste concentram as maiores taxas, com destaque para <strong>Amapá, Alagoas, Pernambuco e Amazonas</strong>.
+</p>
 
-Coeficiente de Pearson estimado: r ≈ -0.62 (conforme o artigo).
+<h3>3. Correlação estatística</h3>
 
-Interpretação: correlação negativa moderada — em média, maiores PIB per capita associam-se a menores taxas de homicídio entre pessoas negras.
+<div style="background:#111; padding:15px; border-radius:8px; color:#eee;">
+<pre>
+r ≈ -0.62   # correlação negativa moderada
+p &lt; 0.05    # estatisticamente significativo
+</pre>
+</div>
 
-O p-value foi reportado como estatisticamente significativo (p < 0.05), o que fortalece a hipótese de associação (não prova causalidade).
+<p>
+Interpretando: estados com maior <strong>PIB per capita</strong> tendem a apresentar <strong>menores taxas de homicídios da população negra</strong>.
+</p>
 
-Mapeamento espacial e distinções regionais:
+<h3>4. Padrões Regionais</h3>
+<p>
+A combinação entre desigualdade histórica, concentração populacional negra e vulnerabilidade territorial reforça um padrão estrutural presente principalmente no Nordeste e na Amazônia Legal.
+</p>
 
-Concentração de população negra e altas taxas no Nordeste e parte da Amazônia Legal aponta para um padrão territorial de vulnerabilidade.
+<hr style="margin: 30px 0;">
+
+<h2>📦 Estrutura Geral do Projeto</h2>
+
+<ul>
+  <li>🗂 CSVs originais + pré-processados</li>
+  <li>📓 Jupyter Notebook / Scripts Python</li>
+  <li>📊 PNGs com visualizações (dpi 300)</li>
+  <li>📁 README interativo (este)</li>
+</ul>
+
+</div>
